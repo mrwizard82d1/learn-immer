@@ -13,6 +13,7 @@ const todos = [
 
 const nextTodos = produce(todos, (draft) => {
     draft.push({ text: 'get coffee', done: true });
+    draft[0].done = true;
 });
 
 console.log(nextTodos.length);
