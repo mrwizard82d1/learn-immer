@@ -1,4 +1,5 @@
 import produce from 'immer';
+import { F, R } from '@mobily/ts-belt';
 
 const todos = [
     {
@@ -23,3 +24,10 @@ console.log(nextTodos[0].done);
 console.log(nextTodos === todos);
 console.log(nextTodos[0] === todos[0]);
 console.log(nextTodos[1] === todos[1]);
+
+const result = R.fromExecution(() => nextTodos[0].done = false);
+console.log(R.isOk(result));
+console.log(R.match(result,
+                    okValue => `${okValue}`,
+                    errorValue =>
+                        `Error: name=${errorValue.name}, message=${errorValue.message}`));
