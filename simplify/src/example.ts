@@ -1,4 +1,5 @@
 import produce from 'immer';
+import { A } from '@mobily/ts-belt';
 
 const todos = [
     {
@@ -12,7 +13,8 @@ const todos = [
 ];
 
 const nextTodos = produce(todos, (draft) => {
-    draft.push({ text: 'get coffee', done: true });
+    A.concat(draft, [{ text: 'get coffee', done: true }]);
+    // draft.push({ text: 'get coffee', done: true });
 });
 
 console.log(nextTodos.length);
