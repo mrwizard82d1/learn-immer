@@ -1,3 +1,5 @@
+import { A, O, pipe } from '@mobily/ts-belt';
+
 type UserId = number;
 type UserName = string;
 type User = { id: UserId, name: UserName };
@@ -8,7 +10,7 @@ type ReservedBy = number | undefined;
 export type Gift = { id: GiftId, description: Description, image: Image, reservedBy: ReservedBy };
 export type State = { users: User[], currentUser: User, gifts: Gift[] };
 
-export function addGift(anteState: State, giftId: GiftId, description: Description, image: Image) {
+export function addGift(anteState: State, giftId: GiftId, description: Description, image: Image): State {
     const nextState = {
         ...anteState,
         gifts: [ ...anteState.gifts ],
