@@ -1,0 +1,9 @@
+type UserId = number;
+type UserName = string;
+type User = { id: UserId, name: UserName };
+type GiftId = string;
+type Description = string;
+type Image = string;
+type ReservedBy = number | undefined;
+export type Gift = { id: GiftId, description: Description, image: Image, reservedBy: ReservedBy };
+export type State = { users: User[], currentUser: User, gifts: { [key: string]: Gift } };
