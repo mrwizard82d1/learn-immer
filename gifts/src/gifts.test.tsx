@@ -1,8 +1,5 @@
 import { State, addGift, toggleReservation } from './gifts';
 
-import { A } from '@mobily/ts-belt';
-
-
 const initialState: State = {
     users: [
         {
@@ -50,22 +47,25 @@ describe('adding a gift', () => {
     });
 })
 
-describe('Reserving an unreserved gift', () => {
-    const nextState = toggleReservation(initialState, 'egghead_subscription');
-
-    test('correctly stores reservedBy', () => {
-        expect(nextState.gifts[1].reservedBy).toBe(1);
-    });
-
-    test('does not modify original state', () => {
-        expect(initialState.gifts[1].reservedBy).toBe(undefined);
-    });
-})
-
-describe('Reserving an already reserved gift', () => {
-    const nextState = toggleReservation(initialState, 'immer_license');
-
+describe('reserving a gift', () => {
     test('preserves stored reservedBy', () => {
+        const nextState = toggleReservation(initialState, 'immer_license');
         expect(nextState.gifts[0].reservedBy).toBe(2);
+    })
+
+    test('do nothing if already reserved by someone else', () => {
+        const nextState = toggleReservation(initialState, 'immer_license');
+        expect(nextState.gifts[0].reservedBy).toBe(2);
+    })
+
+    test('toggle reserved on if not reserved', () => {
+        const nextState = toggleReservation(initialState, 'egghead_subscription');
+        expect(nextState.gifts[1].reservedBy).toBe(1);
+    })
+
+    test('toggle reserved off if reserved', () => {
+        const subsequentState = toggleReservation(initialState, 'egghead_subscription');
+        const nextState = toggleReservation(subsequentState, 'egghead_subscription');
+        expect(nextState.gifts[1].reservedBy).toBe(undefined);
     })
 })

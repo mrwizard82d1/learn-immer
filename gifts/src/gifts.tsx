@@ -23,12 +23,27 @@ export function addGift(anteState: State, giftId: GiftId, description: Descripti
 }
 
 export function toggleReservation(anteState: State, giftId: GiftId): State {
+    const reserveGift = (gift: Gift) => {
+        switch(true) {
+            case gift.reservedBy == undefined:
+                return {
+                    ...gift,
+                    reservedBy: anteState.currentUser.id,
+                }
+            case gift.reservedBy == anteState.currentUser.id:
+                return {
+                    ...gift,
+                    reservedBy: undefined
+                }
+            default:
+                return gift
+        }
+    }
     const postState = {
         ...anteState,
-        gifts: F.toMutable(A.map<Gift, Gift>(anteState.gifts,
-                                             (g => g.reservedBy === undefined
-                                                   ? {...g, reservedBy: anteState.currentUser.id}
-                                                   : g))),
+        gifts: F.toMutable(A.map<Gift, Gift>(anteState.gifts, g => (g.id === giftId
+                                                                    ? reserveGift(g)
+                                                                    : g))),
     };
     return postState;
 }
