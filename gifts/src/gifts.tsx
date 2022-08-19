@@ -1,4 +1,4 @@
-import { A, O, pipe } from '@mobily/ts-belt';
+import { A, F } from '@mobily/ts-belt';
 
 type UserId = number;
 type UserName = string;
@@ -11,11 +11,24 @@ export type Gift = { id: GiftId, description: Description, image: Image, reserve
 export type State = { users: User[], currentUser: User, gifts: Gift[] };
 
 export function addGift(anteState: State, giftId: GiftId, description: Description, image: Image): State {
-    const nextState = {
+    const postState = {
         ...anteState,
-        gifts: [ ...anteState.gifts ],
+        gifts: [
+            ...anteState.gifts,
+            { id: giftId, description, image, reservedBy: undefined },
+        ],
     };
-    nextState.gifts.push({ id: giftId, description, image, reservedBy: undefined });
 
-    return nextState;
+    return postState;
+}
+
+export function toggleReservation(anteState: State, giftId: GiftId): State {
+    const postState = {
+        ...anteState,
+        gifts: F.toMutable(A.map<Gift, Gift>(anteState.gifts,
+                                             (g => g.reservedBy === undefined
+                                                   ? {...g, reservedBy: anteState.currentUser.id}
+                                                   : g))),
+    };
+    return postState;
 }
