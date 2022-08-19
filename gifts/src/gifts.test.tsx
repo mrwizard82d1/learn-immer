@@ -1,4 +1,4 @@
-import { State } from './gifts';
+import { State, addGift } from './gifts';
 
 
 const initialState: State = {
@@ -16,22 +16,34 @@ const initialState: State = {
         id: 1,
         name: 'Test user',
     },
-    gifts: {
-        immer_license: {
+    gifts: [
+        {
             id: "immer_license",
             description: "Immer license",
             image: "https://raw.githubusercontent.com/immerjs/immer/master/images/immer-logo.png",
             reservedBy: 2
         },
-        egghead_subscription: {
+        {
             id: 'egghead_subscription',
             description: "Egghead.io subscription",
             image: "https://pbs.twimg.com/profile_images/735242324293210112/H8YfgQHP_400x400.jpg",
             reservedBy: undefined
-        }
-    },
+        },
+    ],
 };
 
 test('pass a canary test', () => {
     expect(2 + 2).toEqual(4);
+})
+
+describe('adding a gift', () => {
+    const nextState = addGift(initialState, 'mug', 'Coffee Mug', 'image');
+
+    test('adds a gift to the collection', () => {
+        expect(nextState.gifts.length).toEqual(3);
+    });
+
+    test('did not modify the original state', () => {
+        expect(initialState.gifts.length).toEqual(2);
+    });
 })

@@ -6,4 +6,14 @@ type Description = string;
 type Image = string;
 type ReservedBy = number | undefined;
 export type Gift = { id: GiftId, description: Description, image: Image, reservedBy: ReservedBy };
-export type State = { users: User[], currentUser: User, gifts: { [key: string]: Gift } };
+export type State = { users: User[], currentUser: User, gifts: Gift[] };
+
+export function addGift(anteState: State, giftId: GiftId, description: Description, image: Image) {
+    const nextState = {
+        ...anteState,
+        gifts: [ ...anteState.gifts ],
+    };
+    nextState.gifts.push({ id: giftId, description, image, reservedBy: undefined });
+
+    return nextState;
+}
