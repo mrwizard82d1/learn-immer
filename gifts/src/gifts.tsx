@@ -1,3 +1,4 @@
+import produce from 'immer';
 import { A, O } from '@mobily/ts-belt';
 
 type UserId = number;
@@ -11,8 +12,9 @@ export type Gift = { id: GiftId, description: Description, image: Image, reserve
 export type State = { users: User[], currentUser: User, gifts: Gift[] };
 
 export function addGift(anteState: State, giftId: GiftId, description: Description, image: Image): State {
-    anteState.gifts.push({ id: giftId, description, image, reservedBy: undefined })
-    return anteState;
+    return produce(anteState, draftState => {
+        draftState.gifts.push({ id: giftId, description, image, reservedBy: undefined })
+    });
 }
 
 export function toggleReservation(anteState: State, giftId: GiftId): State {
@@ -27,10 +29,11 @@ export function toggleReservation(anteState: State, giftId: GiftId): State {
         }
     }
 
-    const maybeGift = A.find(anteState.gifts, g => g.id == giftId);
-    O.map(maybeGift, g => {
-        g.reservedBy = reserveGift(g);
-        return g;
+    return produce(anteState, draftState => {
+        const maybeGift = A.find(draftState.gifts, g => g.id === giftId);
+        O.map(maybeGift, g => {
+            g.reservedBy = reserveGift(g);
+            return g;
+        });
     });
-    return anteState;
 }
