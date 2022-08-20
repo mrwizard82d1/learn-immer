@@ -11,26 +11,24 @@ export type Gift = { id: GiftId, description: Description, image: Image, reserve
 export type State = { users: User[], currentUser: User, gifts: Gift[] };
 
 export function addGift(anteState: State, giftId: GiftId, description: Description, image: Image): State {
-    const postState = {
+    return {
         ...anteState,
         gifts: [
             ...anteState.gifts,
             { id: giftId, description, image, reservedBy: undefined },
         ],
     };
-
-    return postState;
 }
 
 export function toggleReservation(anteState: State, giftId: GiftId): State {
     const reserveGift = (gift: Gift) => {
         switch(true) {
-            case gift.reservedBy == undefined:
+            case gift.reservedBy === undefined:
                 return {
                     ...gift,
                     reservedBy: anteState.currentUser.id,
                 }
-            case gift.reservedBy == anteState.currentUser.id:
+            case gift.reservedBy === anteState.currentUser.id:
                 return {
                     ...gift,
                     reservedBy: undefined
@@ -39,11 +37,11 @@ export function toggleReservation(anteState: State, giftId: GiftId): State {
                 return gift
         }
     }
-    const postState = {
+
+    return {
         ...anteState,
         gifts: F.toMutable(A.map<Gift, Gift>(anteState.gifts, g => (g.id === giftId
                                                                     ? reserveGift(g)
                                                                     : g))),
     };
-    return postState;
 }
