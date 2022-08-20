@@ -1,4 +1,4 @@
-import { A, F } from '@mobily/ts-belt';
+import { A, O } from '@mobily/ts-belt';
 
 type UserId = number;
 type UserName = string;
@@ -11,37 +11,26 @@ export type Gift = { id: GiftId, description: Description, image: Image, reserve
 export type State = { users: User[], currentUser: User, gifts: Gift[] };
 
 export function addGift(anteState: State, giftId: GiftId, description: Description, image: Image): State {
-    return {
-        ...anteState,
-        gifts: [
-            ...anteState.gifts,
-            { id: giftId, description, image, reservedBy: undefined },
-        ],
-    };
+    anteState.gifts.push({ id: giftId, description, image, reservedBy: undefined })
+    return anteState;
 }
 
 export function toggleReservation(anteState: State, giftId: GiftId): State {
     const reserveGift = (gift: Gift) => {
         switch(true) {
             case gift.reservedBy === undefined:
-                return {
-                    ...gift,
-                    reservedBy: anteState.currentUser.id,
-                }
+                return anteState.currentUser.id
             case gift.reservedBy === anteState.currentUser.id:
-                return {
-                    ...gift,
-                    reservedBy: undefined
-                }
+                return undefined
             default:
-                return gift
+                return gift.reservedBy;
         }
     }
 
-    return {
-        ...anteState,
-        gifts: F.toMutable(A.map<Gift, Gift>(anteState.gifts, g => (g.id === giftId
-                                                                    ? reserveGift(g)
-                                                                    : g))),
-    };
+    const maybeGift = A.find(anteState.gifts, g => g.id == giftId);
+    O.map(maybeGift, g => {
+        g.reservedBy = reserveGift(g);
+        return g;
+    });
+    return anteState;
 }
