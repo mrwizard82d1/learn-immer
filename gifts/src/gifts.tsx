@@ -1,15 +1,14 @@
+import { allUsers, getCurrentUser, User } from './misc/users'
+import defaultGifts from './misc/gifts.json';
 import produce from 'immer';
 import { A, O } from '@mobily/ts-belt';
 
-type UserId = number;
-type UserName = string;
-type User = { id: UserId, name: UserName };
 type GiftId = string;
 type Description = string;
 type Image = string;
 type ReservedBy = number | undefined;
 export type Gift = { id: GiftId, description: Description, image: Image, reservedBy: ReservedBy };
-export type State = { users: User[], currentUser: User, gifts: Gift[] };
+export type State = { users: User[], currentUser: User, gifts: { [keyof: string]: Gift } };
 
 export function addGift(anteState: State, giftId: GiftId, description: Description, image: Image): State {
     return produce(anteState, draftState => {
@@ -36,4 +35,12 @@ export function toggleReservation(anteState: State, giftId: GiftId): State {
             return g;
         });
     });
+}
+
+export function initialState(): State {
+    return {
+        users: allUsers,
+        currentUser: O.getExn(O.fromNullable(getCurrentUser())),
+        gifts: defaultGifts,
+    };
 }

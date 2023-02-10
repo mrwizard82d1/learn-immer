@@ -1,6 +1,10 @@
 import { O } from '@mobily/ts-belt';
 
-export const allUsers = [
+type UserId = number;
+type UserName = string;
+export type User = { id: UserId, name: UserName };
+
+export const allUsers: User[] = [
   "🐶",
   "🐱",
   "🐭",
@@ -45,5 +49,6 @@ export function getCurrentUser() {
                                                 Math.round(Math.random() * (allUsers.length - 1)));
   const currentUserId = O.getExn(maybeCurrentUserId) as string;
   sessionStorage.setItem("user", currentUserId)
+
   return allUsers[parseInt(currentUserId)]
 }
